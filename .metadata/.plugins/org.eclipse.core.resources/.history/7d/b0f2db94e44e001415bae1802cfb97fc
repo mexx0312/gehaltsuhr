@@ -1,0 +1,5 @@
+package de.rollinrob.gehaltsuhr;
+
+public class TimingThread extends Thread {
+
+}

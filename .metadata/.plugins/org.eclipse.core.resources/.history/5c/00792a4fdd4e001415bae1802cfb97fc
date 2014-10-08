@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <string-array android:id="@+id/stringarray1" android:layout_height="wrap_content" android:layout_width="wrap_content" name="notification intervals">
+        <item android:layout_height="wrap_content" android:id="@+id/item1" android:layout_width="wrap_content">1€</item>
+		<item android:layout_height="wrap_content" android:id="@+id/item2" android:layout_width="wrap_content">2€</item>
+		<item android:layout_height="wrap_content" android:id="@+id/item5" android:layout_width="wrap_content">5€</item>
+		<item android:layout_height="wrap_content" android:id="@+id/item10" android:layout_width="wrap_content">10€</item>
+		<item android:layout_height="wrap_content" android:id="@+id/item50" android:layout_width="wrap_content">50€</item>
+    </string-array>
+    
+</resources>

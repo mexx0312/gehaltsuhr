@@ -1,0 +1,37 @@
+package de.rollinrob.gehaltsuhr;
+
+import android.os.SystemClock;
+
+public class TimingThread extends Thread {
+
+	private long starttime;
+	
+	@Override
+	public void interrupt() {
+		// TODO Auto-generated method stub
+		super.interrupt();
+	}
+
+	@Override
+	public synchronized void start() {
+		// TODO Auto-generated method stub
+		starttime = SystemClock.elapsedRealtime();
+		super.start();
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		long diff = SystemClock.elapsedRealtime()-starttime;
+		//Send diff to main thread
+		try {
+			sleep(10000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		super.run();
+	}
+
+
+}
