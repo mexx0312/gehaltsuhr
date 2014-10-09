@@ -23,8 +23,8 @@ public class MainActivity extends ActionBarActivity {
 	EditText hourlyRateEditText;
 	Editable hourlyRateText;
 	char[] chars = new char[10];
-	private float currentPay = 0;
-	private float hourlyRate = 0; //in Cents
+	private int currentPay = 0;
+	private int hourlyRate = 0; //in Cents
 	Toast test;
 	Handler messageHandler = new Handler(){
 
@@ -32,8 +32,15 @@ public class MainActivity extends ActionBarActivity {
 		public void handleMessage(Message msg) {
 			if(runningState){
 				currentPay += hourlyRate/60;
-				
-				setCurrentPay(""+(int)currentPay+"Cent");
+				int curpeuro = currentPay/100;
+				int curpcent = currentPay-curpeuro*100;
+				char nn;
+				if(curpcent<10){
+					nn = '0';
+				} else {
+					nn = '\0';
+				}
+				setCurrentPay(""+curpeuro+","+nn+curpcent+"€");
 			}
 			//test = Toast.makeText(getApplicationContext(),"Message handled!", Toast.LENGTH_SHORT);
 			//test.show();
@@ -77,9 +84,13 @@ public class MainActivity extends ActionBarActivity {
             				hourlyRate += Integer.parseInt(""+chars[j+2]);
             				break;
             			}
+            			if(j==hourlyRateText.length()-1 && chars[j]!='.'){
+            				for(int k=j; k>=0;k--){
+            					hourlyRate += Integer.parseInt(""+chars[k])*Math.pow(10,2+j-k); //times 100 because it's Cents
+            				}
+            				break;
+            			}
             		}
-            		test = Toast.makeText(getApplicationContext(),""+hourlyRate, Toast.LENGTH_SHORT);
-        			test.show();
             		timing = new TimingThread(messageHandler);
             		try{
             			timing.start();
@@ -102,6 +113,14 @@ public class MainActivity extends ActionBarActivity {
                 			if(chars[j]=='.'){
                 				for(int k=j-1; k>=0;k--){
                 					hourlyRate += Integer.parseInt(""+chars[k])*Math.pow(10,1+j-k); //times 100 because it's Cents
+                				}
+                				hourlyRate += Integer.parseInt(""+chars[j+1])*10;
+                				hourlyRate += Integer.parseInt(""+chars[j+2]);
+                				break;
+                			}
+                			if(j==hourlyRateText.length()-1 && chars[j]!='.'){
+                				for(int k=j; k>=0;k--){
+                					hourlyRate += Integer.parseInt(""+chars[k])*Math.pow(10,2+j-k); //times 100 because it's Cents
                 				}
                 				break;
                 			}
