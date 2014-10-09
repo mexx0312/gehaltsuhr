@@ -69,12 +69,15 @@ public class MainActivity extends ActionBarActivity {
             		//test = Toast.makeText(getApplicationContext(),hourlyRateText.toString(), Toast.LENGTH_SHORT);
         			//test.show();
             		hourlyRateText.getChars(0, hourlyRateText.length(), chars, 0);
-            		test = Toast.makeText(getApplicationContext(),""+chars[0], Toast.LENGTH_SHORT);
-        			test.show();
-        			/*test = Toast.makeText(getApplicationContext(),chars[1], Toast.LENGTH_SHORT);
-        			test.show();
-            		test = Toast.makeText(getApplicationContext(),chars[2], Toast.LENGTH_SHORT);
-        			test.show();*/
+            		//test = Toast.makeText(getApplicationContext(),""+chars[0], Toast.LENGTH_SHORT);
+        			//test.show();
+            		for(int j=0; j<hourlyRateText.length();j++){
+            			if(chars[j]=='.'){
+            				for(int k=j; k>=0;k--){
+            					hourlyRate += chars[k]*10HOCHk
+            				}
+            			}
+            		}
             		timing = new TimingThread(messageHandler);
             		try{
             			timing.start();
