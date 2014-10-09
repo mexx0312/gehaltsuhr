@@ -23,8 +23,8 @@ public class MainActivity extends ActionBarActivity {
 	EditText hourlyRateEditText;
 	Editable hourlyRateText;
 	char[] chars = new char[10];
-	private int currentPay = 0;
-	private int hourlyRate = 1000; //in Cents
+	private float currentPay = 0;
+	private float hourlyRate = 0; //in Cents
 	Toast test;
 	Handler messageHandler = new Handler(){
 
@@ -32,7 +32,8 @@ public class MainActivity extends ActionBarActivity {
 		public void handleMessage(Message msg) {
 			if(runningState){
 				currentPay += hourlyRate/60;
-				setCurrentPay(""+currentPay+"€");
+				
+				setCurrentPay(""+(int)currentPay+"Cent");
 			}
 			//test = Toast.makeText(getApplicationContext(),"Message handled!", Toast.LENGTH_SHORT);
 			//test.show();
@@ -48,7 +49,7 @@ public class MainActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_main);
 		
 		textviewCurrentPay = (TextView)findViewById(R.id.textViewCurrentPay);
-		
+		hourlyRateEditText = (EditText)findViewById(R.id.editTextHourlyRate);
 		
 		//Initialise the notification interval spinner
 		Spinner spinner = (Spinner) findViewById(R.id.spinnerNotification);
@@ -64,20 +65,21 @@ public class MainActivity extends ActionBarActivity {
 		buttonStartStop.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	if(timing==null && !runningState){
-            		hourlyRateEditText = (EditText)findViewById(R.id.editTextHourlyRate);
+
             		hourlyRateText = hourlyRateEditText.getText();
-            		//test = Toast.makeText(getApplicationContext(),hourlyRateText.toString(), Toast.LENGTH_SHORT);
-        			//test.show();
             		hourlyRateText.getChars(0, hourlyRateText.length(), chars, 0);
-            		//test = Toast.makeText(getApplicationContext(),""+chars[0], Toast.LENGTH_SHORT);
-        			//test.show();
             		for(int j=0; j<hourlyRateText.length();j++){
             			if(chars[j]=='.'){
-            				for(int k=j; k>=0;k--){
-            					hourlyRate += chars[k]*10HOCHk
+            				for(int k=j-1; k>=0;k--){
+            					hourlyRate += Integer.parseInt(""+chars[k])*Math.pow(10,1+j-k); //times 100 because it's Cents
             				}
+            				hourlyRate += Integer.parseInt(""+chars[j+1])*10;
+            				hourlyRate += Integer.parseInt(""+chars[j+2]);
+            				break;
             			}
             		}
+            		test = Toast.makeText(getApplicationContext(),""+hourlyRate, Toast.LENGTH_SHORT);
+        			test.show();
             		timing = new TimingThread(messageHandler);
             		try{
             			timing.start();
@@ -94,6 +96,16 @@ public class MainActivity extends ActionBarActivity {
             		//test = Toast.makeText(getApplicationContext(),timing.getState().toString(), Toast.LENGTH_SHORT);
         			//test.show();
         			if(timing.getState() == Thread.State.NEW){
+        				hourlyRateText = hourlyRateEditText.getText();
+                		hourlyRateText.getChars(0, hourlyRateText.length(), chars, 0);
+                		for(int j=0; j<hourlyRateText.length();j++){
+                			if(chars[j]=='.'){
+                				for(int k=j-1; k>=0;k--){
+                					hourlyRate += Integer.parseInt(""+chars[k])*Math.pow(10,1+j-k); //times 100 because it's Cents
+                				}
+                				break;
+                			}
+                		}
         				timing.start();
         			} else {
         				timing.goOn();

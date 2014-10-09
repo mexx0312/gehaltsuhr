@@ -24,7 +24,7 @@ public class TimingThread extends Thread {
 
 		while(true){
 			try {
-				sleep(3000);
+				sleep(1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
