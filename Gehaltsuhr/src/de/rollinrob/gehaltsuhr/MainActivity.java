@@ -9,22 +9,30 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
 
-	private TextView currentPay;
-	private TimingThread timing;
+	private TextView textviewCurrentPay;
+	private TimingThread timing = null;
+	private boolean runningState = false;
+	EditText hourlyRateText;
+	private int currentPay = 0;
+	private int hourlyRate = 1000; //in Cents
+	Toast test;
 	Handler messageHandler = new Handler(){
 
 		@Override
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
-			currentPay.setText(msg.arg1);
-			
-			
-			super.handleMessage(msg);
+			currentPay += hourlyRate/60;
+			setCurrentPay(""+currentPay+"€");
+			test = Toast.makeText(getApplicationContext(),"Message handled!", Toast.LENGTH_SHORT);
+			test.show();
+			//super.handleMessage(msg);
 		}
 		
 	};
@@ -35,7 +43,7 @@ public class MainActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		currentPay = (TextView)findViewById(R.id.textViewCurrentPay);
+		textviewCurrentPay = (TextView)findViewById(R.id.textViewCurrentPay);
 		
 		
 		//Initialise the notification interval spinner
@@ -48,22 +56,40 @@ public class MainActivity extends ActionBarActivity {
 		// Apply the adapter to the spinner
 		spinner.setAdapter(adapter);
 		
-		Button buttonStartStop = (Button)findViewById(R.id.buttonStartStop);
+		final Button buttonStartStop = (Button)findViewById(R.id.buttonStartStop);
 		buttonStartStop.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	//Check if already started!!!
-                timing = new TimingThread(messageHandler);
-                try{
-                	timing.start();
-                } catch (IllegalThreadStateException e){
-        			e.printStackTrace();
-                }
+            	if(timing==null && !runningState){
+            		hourlyRateText = (EditText)findViewById(R.id.editTextHourlyRate);
+            		//hourlyRate = hourlyRateText.getText();
+            		timing = new TimingThread(messageHandler);
+            		try{
+            			timing.start();
+            			runningState = true;
+            			buttonStartStop.setText("Stop");
+            		} catch (IllegalThreadStateException e){
+            			e.printStackTrace();
+            		}
+            	} else if(runningState){
+            		timing.interrupt();
+            		runningState = false;
+        			buttonStartStop.setText("Start");
+            	} else if(!runningState){
+            		timing.start();
+            		runningState = true;
+        			buttonStartStop.setText("Stop");
+            	}
+            	
+               
             }
         });
 
-		
-		
-		
+			
+	}
+	
+	public void setCurrentPay(String input){
+		textviewCurrentPay = (TextView)findViewById(R.id.textViewCurrentPay);
+		textviewCurrentPay.setText(input);
 	}
 
 	@Override
@@ -86,15 +112,18 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	@Override
-	protected void onStop() {
-		// Then app is no longer visible
-		super.onStop();
+	protected void onPause() {
+		// Then app loses focus
+		//super.onPause();
+		//test = Toast.makeText(getApplicationContext(),"onPause!", Toast.LENGTH_SHORT);
+		//test.show();
 		//TODO Save current time and reload it in onRestart()-method !!!!!
 			try{
 				timing.interrupt();
 			} catch(Exception e){
     			e.printStackTrace();
 			}
+			super.onPause();
 	}
 
 	

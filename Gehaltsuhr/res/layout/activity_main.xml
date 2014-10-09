@@ -38,23 +38,50 @@
         android:minWidth="150dp"
         android:text="@string/buttonReset" />
 
-    <Spinner
-        android:id="@+id/spinnerNotification"
+    <LinearLayout
+        android:id="@+id/linearLayoutNotifications"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/buttonReset"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/buttonReset"
-        android:layout_marginBottom="25dp" />
+        android:layout_alignParentLeft="true"
+        android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/textViewIntervallDescr"
+        <TextView
+            android:id="@+id/textViewIntervallDescr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/intervalDescr" />
+
+        <Spinner
+            android:id="@+id/spinnerNotification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="25dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutHourlyRate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/spinnerNotification"
-        android:layout_alignLeft="@+id/spinnerNotification"
-        android:layout_alignRight="@+id/spinnerNotification"
-        android:layout_marginBottom="5dp"
-        android:text="@string/intervalDescr" />
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/linearLayoutNotifications"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textViewHourlyRateDescr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hourlyRateDescr" />
+
+        <EditText
+            android:id="@+id/editTextHourlyRate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" >
+
+            <requestFocus />
+        </EditText>
+
+    </LinearLayout>
 
 </RelativeLayout>

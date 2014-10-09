@@ -8,5 +8,6 @@
     <string name="zeroEuros">0,00 €</string>
     <string name="buttonReset">Zurücksetzen</string>
     <string name="intervalDescr">Benachrichtigung:</string>
+    <string name="hourlyRateDescr">Stundenlohn:</string>
 
 </resources>
