@@ -185,18 +185,24 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	@Override
-	protected void onPause() {
-		// Then app loses focus
-		//super.onPause();
-		//test = Toast.makeText(getApplicationContext(),"onPause!", Toast.LENGTH_SHORT);
-		//test.show();
+	protected void onStop() {
+	
+		super.onStop();
 		//TODO Save current time and reload it in onRestart()-method !!!!!
-			try{
-				timing.interrupt();
-			} catch(Exception e){
-    			e.printStackTrace();
-			}
-			super.onPause();
+		try{
+			timing.interrupt();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	protected void onRestart() {
+		// TODO Auto-generated method stub
+		super.onRestart();
+		
+		
 	}
 
 	
