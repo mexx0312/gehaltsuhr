@@ -1,6 +1,7 @@
 package de.rollinrob.gehaltsuhr;
 
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,7 +20,9 @@ public class MainActivity extends ActionBarActivity {
 	private TextView textviewCurrentPay;
 	private TimingThread timing = null;
 	private boolean runningState = false;
-	EditText hourlyRateText;
+	EditText hourlyRateEditText;
+	Editable hourlyRateText;
+	char[] chars = new char[10];
 	private int currentPay = 0;
 	private int hourlyRate = 1000; //in Cents
 	Toast test;
@@ -27,11 +30,12 @@ public class MainActivity extends ActionBarActivity {
 
 		@Override
 		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
-			currentPay += hourlyRate/60;
-			setCurrentPay(""+currentPay+"€");
-			test = Toast.makeText(getApplicationContext(),"Message handled!", Toast.LENGTH_SHORT);
-			test.show();
+			if(runningState){
+				currentPay += hourlyRate/60;
+				setCurrentPay(""+currentPay+"€");
+			}
+			//test = Toast.makeText(getApplicationContext(),"Message handled!", Toast.LENGTH_SHORT);
+			//test.show();
 			//super.handleMessage(msg);
 		}
 		
@@ -60,8 +64,17 @@ public class MainActivity extends ActionBarActivity {
 		buttonStartStop.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	if(timing==null && !runningState){
-            		hourlyRateText = (EditText)findViewById(R.id.editTextHourlyRate);
-            		//hourlyRate = hourlyRateText.getText();
+            		hourlyRateEditText = (EditText)findViewById(R.id.editTextHourlyRate);
+            		hourlyRateText = hourlyRateEditText.getText();
+            		//test = Toast.makeText(getApplicationContext(),hourlyRateText.toString(), Toast.LENGTH_SHORT);
+        			//test.show();
+            		hourlyRateText.getChars(0, hourlyRateText.length(), chars, 0);
+            		test = Toast.makeText(getApplicationContext(),""+chars[0], Toast.LENGTH_SHORT);
+        			test.show();
+        			/*test = Toast.makeText(getApplicationContext(),chars[1], Toast.LENGTH_SHORT);
+        			test.show();
+            		test = Toast.makeText(getApplicationContext(),chars[2], Toast.LENGTH_SHORT);
+        			test.show();*/
             		timing = new TimingThread(messageHandler);
             		try{
             			timing.start();
@@ -75,7 +88,13 @@ public class MainActivity extends ActionBarActivity {
             		runningState = false;
         			buttonStartStop.setText("Start");
             	} else if(!runningState){
-            		timing.start();
+            		//test = Toast.makeText(getApplicationContext(),timing.getState().toString(), Toast.LENGTH_SHORT);
+        			//test.show();
+        			if(timing.getState() == Thread.State.NEW){
+        				timing.start();
+        			} else {
+        				timing.goOn();
+        			}
             		runningState = true;
         			buttonStartStop.setText("Stop");
             	}
@@ -84,6 +103,26 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+		final Button buttonReset = (Button)findViewById(R.id.buttonReset);
+		buttonReset.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	if(timing==null && !runningState){
+            		timing = new TimingThread(messageHandler);
+            	} else if(runningState){
+            		timing.interrupt();
+            		runningState = false;
+        			buttonStartStop.setText("Start");
+        			timing = new TimingThread(messageHandler);
+            	} else if(!runningState){
+            		timing = new TimingThread(messageHandler);
+            	}
+    			currentPay = 0;
+    			setCurrentPay("0,00€");
+            	
+               
+            }
+        });
+		
 			
 	}
 	
