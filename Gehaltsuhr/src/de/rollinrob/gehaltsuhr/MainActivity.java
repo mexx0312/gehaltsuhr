@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +26,7 @@ public class MainActivity extends ActionBarActivity {
 	char[] chars = new char[10];
 	private int currentPay = 0;
 	private int hourlyRate = 0; //in Cents
+	private long starttime;
 	Toast test;
 	Handler messageHandler = new Handler(){
 
@@ -72,7 +74,7 @@ public class MainActivity extends ActionBarActivity {
 		buttonStartStop.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	if(timing==null && !runningState){
-
+            		starttime = SystemClock.elapsedRealtime();
             		hourlyRateText = hourlyRateEditText.getText();
             		hourlyRateText.getChars(0, hourlyRateText.length(), chars, 0);
             		for(int j=0; j<hourlyRateText.length();j++){
@@ -106,6 +108,7 @@ public class MainActivity extends ActionBarActivity {
             	} else if(!runningState){
             		//test = Toast.makeText(getApplicationContext(),timing.getState().toString(), Toast.LENGTH_SHORT);
         			//test.show();
+            		starttime = SystemClock.elapsedRealtime();
         			if(timing.getState() == Thread.State.NEW){
         				hourlyRateText = hourlyRateEditText.getText();
                 		hourlyRateText.getChars(0, hourlyRateText.length(), chars, 0);
@@ -183,12 +186,12 @@ public class MainActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
+	
 	@Override
 	protected void onStop() {
-	
 		super.onStop();
-		//TODO Save current time and reload it in onRestart()-method !!!!!
+		// TODO Save current pay, which is (elapsedRealtime()-starttime)ms*hourlyRate/(1000(ms)*60s*60min)
+		// TODO Save settings (hourly rate, notifications, running state) 
 		try{
 			timing.interrupt();
 		} catch(Exception e){
@@ -199,9 +202,10 @@ public class MainActivity extends ActionBarActivity {
 
 	@Override
 	protected void onRestart() {
-		// TODO Auto-generated method stub
+		// TODO Recover current pay, hourly rate, notifications setting, running state info
 		super.onRestart();
-		
+		test = Toast.makeText(getApplicationContext(),"Gehaltsuhr: onRestart()", Toast.LENGTH_SHORT);
+		test.show();
 		
 	}
 
